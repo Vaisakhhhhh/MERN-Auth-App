@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 import Home from "./pages/user/Home"
 import About from "./pages/user/About"
 import SignIn from "./pages/user/SignIn"
@@ -20,6 +23,7 @@ const App = () => {
          <Route path="/profile" element={ <Profile/> } />;
         </Route>
       </Routes>
+      <ToastContainer position="bottom-right" autoClose={3000}/>
     </BrowserRouter>
   )
 }

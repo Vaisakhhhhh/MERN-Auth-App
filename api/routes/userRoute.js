@@ -1,11 +1,9 @@
 import express from 'express';
+import { updateUser } from '../controllers/userController.js';
+import { verifyToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.json({
-        message: 'API is working!'
-    })
-});
+router.put('/update', verifyToken, updateUser);
 
 export default router;
