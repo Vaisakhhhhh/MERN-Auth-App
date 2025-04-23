@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInStart, signInSuccess, signInFailure } from "../../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const SignIn = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -12,6 +13,12 @@ const SignIn = () => {
   const { loading, error } = useSelector((state) => state.user)
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/", { replace: true });
+    }
+  }, [currentUser, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -69,7 +76,7 @@ const SignIn = () => {
       }
       dispatch(signInSuccess(data));
 
-      navigate('/');
+      navigate('/', { replace: true });
     } catch (error) {
       dispatch(signInFailure(error));
     }
