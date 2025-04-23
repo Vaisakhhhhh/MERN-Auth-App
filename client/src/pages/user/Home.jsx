@@ -1,5 +1,17 @@
+import { useNavigate } from 'react-router-dom';
+
 
 const Home = () => {
+
+  const navigate = useNavigate();
+
+  const handleGetStarted = () =>{
+    navigate('/sign-up');
+  } 
+  const handleLearnMore = () => {
+    navigate('/about');
+  }
+
   return (
     <div className="min-h-[600px] bg-gradient-to-br from-slate-100 to-white flex flex-col items-center justify-center px-4">
       <h1 className="text-4xl md:text-5xl font-bold text-slate-800 mb-4 text-center">
@@ -10,13 +22,13 @@ const Home = () => {
       </p>
       <div className="flex gap-4">
         <a
-          href="/sign-up"
+          onClick={handleGetStarted}
           className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition"
         >
           Get Started
         </a>
         <a
-          href="/about"
+          onClick={handleLearnMore}
           className="px-6 py-3 border border-slate-700 text-slate-700 rounded-lg hover:bg-slate-100 transition"
         >
           Learn More
