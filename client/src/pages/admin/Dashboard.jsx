@@ -5,6 +5,7 @@ import { logoutUser } from "../../redux/admin/adminSlice";
 import EditUserModal from "../../components/EditUserModal";
 import { toast } from "react-toastify";
 import ConfirmDeleteModal from "../../components/ConfirmDeleteModal";
+import CreateUserModal from "../../components/CreateUserModal";
 
 
 const Dashboard = () => {
@@ -98,10 +99,38 @@ const Dashboard = () => {
     }
   };
   
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleCreateUser = () => {
-    alert("Open create user modal or form");
+    setIsCreateModalOpen(true);
   };
+   
+  const handleCreateNewUser = async (newUser) => {
+    try {
+      const res = await fetch("/api/admin/create-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(newUser),
+      });
+  
+      if (!res.ok) {
+        toast.error("Failed to create user");
+        return;
+      }
+  
+      const response = await res.json();
+      setUsers((prevUsers) => [...prevUsers, response.createdUser]);
+      setIsCreateModalOpen(false);
+      toast.success("User created successfully");
+    } catch (error) {
+      console.error("Error creating user:", error);
+      toast.error("Error creating user");
+    }
+  };
+  
 
   const handleLogout = async () => {
     try {
@@ -116,7 +145,7 @@ const Dashboard = () => {
   };
 
   const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    user.username?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -203,6 +232,13 @@ const Dashboard = () => {
         onConfirm={confirmDeleteUser}
         user={userToDelete}
       />
+
+      <CreateUserModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreate={handleCreateNewUser}
+      />
+
 
     </div>
   );
