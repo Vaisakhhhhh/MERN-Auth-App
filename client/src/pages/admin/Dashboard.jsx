@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../redux/admin/adminSlice";
+import EditUserModal from "../../components/EditUserModal";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -26,8 +28,41 @@ const Dashboard = () => {
     fetchUsers();
   }, []);
 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
   const handleEdit = (id) => {
-    alert(`Edit user with ID ${id}`);
+    const user = users.find((u) => u._id === id);
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveUser = async (updatedUser) => {
+    try {
+      const res = await fetch(`/api/admin/update-user/${updatedUser._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username: updatedUser.username,
+          email: updatedUser.email,
+        }),
+      });
+
+      if (!res.ok) toast.error("Failed to update user");
+
+      // Update local state
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u._id === updatedUser._id ? updatedUser : u))
+      );
+      setIsEditModalOpen(false);
+      setSelectedUser(null);
+      toast.success("Successfully updated user");
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
   };
 
   const handleCreateUser = () => {
@@ -108,7 +143,7 @@ const Dashboard = () => {
                     Edit
                   </button>
                   <button
-                    onClick={() => handleDelete(user.id)}
+                    onClick={() => handleDelete(user._id)}
                     className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
                   >
                     Delete
@@ -121,6 +156,12 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+      <EditUserModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        user={selectedUser}
+        onSave={handleSaveUser}
+      />
     </div>
   );
 };

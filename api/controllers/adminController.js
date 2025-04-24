@@ -32,3 +32,29 @@ export const getAllUsers = async (req, res, next) => {
         next(error);
     }
 } 
+
+export const updateUsers = async (req, res, next) => {
+    const { id } = req.params;
+    const { username, email } = req.body;
+
+    if (!username || !email) {
+        return res.status(400).json({ error: "Username and email are required" });
+    }
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { username, email },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return next(errorHandler(404, 'User not found'));
+        }
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+}
