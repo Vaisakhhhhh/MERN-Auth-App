@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllUsers, login, logout, updateUsers } from '../controllers/adminController.js';
+import { deleteUser, getAllUsers, login, logout, updateUsers } from '../controllers/adminController.js';
 import { verifyAdminToken } from '../middleware/authMiddleware.js';
 
 
@@ -9,4 +9,5 @@ router.post('/login', login);
 router.post('/logout', logout);
 router.get('/get-all-users', verifyAdminToken, getAllUsers);
 router.put('/update-user/:id', verifyAdminToken, updateUsers);
+router.delete('/delete-user/:id', verifyAdminToken, deleteUser);
 export default router;

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../redux/admin/adminSlice";
 import EditUserModal from "../../components/EditUserModal";
 import { toast } from "react-toastify";
+import ConfirmDeleteModal from "../../components/ConfirmDeleteModal";
+
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -64,6 +66,38 @@ const Dashboard = () => {
       console.error("Error updating user:", error);
     }
   };
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  
+  const handleDelete = (id) => {
+    const user = users.find((u) => u._id === id);
+    setUserToDelete(user);
+    setIsDeleteModalOpen(true);
+  };
+  
+  const confirmDeleteUser = async () => {
+    try {
+      const res = await fetch(`/api/admin/delete-user/${userToDelete._id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+  
+      if (!res.ok) {
+        toast.error("Failed to delete user");
+        return;
+      }
+  
+      setUsers((prev) => prev.filter((u) => u._id !== userToDelete._id));
+      toast.success("User deleted successfully");
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Error deleting user");
+    }
+  };
+  
 
   const handleCreateUser = () => {
     alert("Open create user modal or form");
@@ -162,6 +196,14 @@ const Dashboard = () => {
         user={selectedUser}
         onSave={handleSaveUser}
       />
+
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDeleteUser}
+        user={userToDelete}
+      />
+
     </div>
   );
 };
