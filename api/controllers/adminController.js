@@ -1,8 +1,9 @@
+import User from "../models/userModel.js";
 import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
 
 
-export const login = (req, res, next) => {
+export const login = (req, res) => {
     const { email, password } = req.body;
 
     if(email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
@@ -22,3 +23,12 @@ export const logout = (req, res) => {
        .status(200)
        .json({ message: "Logged out successfully"});
 }
+
+export const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find().sort({ username: 1 });
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+} 

@@ -1,42 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../redux/admin/adminSlice";
-const defaultAvatar = "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
-
-const mockUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-    avatar: defaultAvatar,
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    avatar: defaultAvatar,
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    avatar: defaultAvatar,
-  },
-];
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [users, setUsers] = useState(mockUsers);
+  const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("/api/admin/get-all-users", {
+        method: "GET",
+        credentials: 'include',
+      });
+      const data = await res.json();
+      setUsers(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleEdit = (id) => {
     alert(`Edit user with ID ${id}`);
-  };
-
-  const handleDelete = (id) => {
-    setUsers(users.filter((user) => user.id !== id));
   };
 
   const handleCreateUser = () => {
@@ -56,7 +47,7 @@ const Dashboard = () => {
   };
 
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -95,23 +86,23 @@ const Dashboard = () => {
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
               <div
-                key={user.id}
+                key={user._id}
                 className="flex items-center justify-between border-b pb-3"
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={user.avatar}
-                    alt={user.name}
+                    src={user.profilePicture}
+                    alt={user.username}
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
-                    <h3 className="font-semibold text-gray-800">{user.name}</h3>
+                    <h3 className="font-semibold text-gray-800">{user.username}</h3>
                     <p className="text-sm text-gray-500">{user.email}</p>
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleEdit(user.id)}
+                    onClick={() => handleEdit(user._id)}
                     className="px-3 py-1 text-sm bg-yellow-400 text-white rounded hover:bg-yellow-500"
                   >
                     Edit
