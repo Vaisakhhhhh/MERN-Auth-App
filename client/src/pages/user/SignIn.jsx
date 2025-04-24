@@ -16,7 +16,7 @@ const SignIn = () => {
 
   useEffect(() => {
     if (currentUser) {
-      navigate("/profile", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [currentUser, navigate]);
 
@@ -76,7 +76,7 @@ const SignIn = () => {
       }
       dispatch(signInSuccess(data));
 
-      navigate('/profile', { replace: true });
+      navigate('/', { replace: true });
     } catch (error) {
       dispatch(signInFailure(error));
     }

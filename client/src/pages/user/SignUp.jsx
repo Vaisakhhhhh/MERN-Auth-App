@@ -16,7 +16,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (currentUser) {
-      navigate("/profile", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [currentUser, navigate]);
 
