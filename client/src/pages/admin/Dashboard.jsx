@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../../redux/admin/adminSlice";
 const defaultAvatar = "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
 
 const mockUsers = [
@@ -23,6 +26,8 @@ const mockUsers = [
 ];
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [users, setUsers] = useState(mockUsers);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -38,8 +43,16 @@ const Dashboard = () => {
     alert("Open create user modal or form");
   };
 
-  const handleLogout = () => {
-    alert("Logged out");
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin/logout', {
+        method: "POST",
+      });
+      dispatch(logoutUser());
+      navigate("/admin-login");
+    } catch (error) {
+      console.log('Logout failed :', error);
+    }
   };
 
   const filteredUsers = users.filter((user) =>

@@ -12,7 +12,13 @@ export const login = (req, res, next) => {
     const token = jwt.sign({ id: email }, process.env.JWT_SECRET);
     const  expiryDate = new Date(Date.now() + 3600000);
 
-    res.cookie('access_token', token, { httpOnly: true, expires: expiryDate })
+    res.cookie('admin_token', token, { httpOnly: true, expires: expiryDate })
        .status(200)
        .json({ email });
+}
+
+export const logout = (req, res) => {
+    res.cleareCookie('admin_token')
+       .status(200)
+       .json({ message: "Logged out successfully"});
 }
