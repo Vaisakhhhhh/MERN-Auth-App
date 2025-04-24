@@ -38,15 +38,13 @@ const Profile = () => {
       profilePicture: imageUrl,
     };
 
-    const token = currentUser?.token;
-
     try {
       const res = await fetch("/api/user/update", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
+        credentials: 'include',
         body: JSON.stringify(updatedData),
       });
 

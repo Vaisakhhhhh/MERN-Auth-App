@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInStart, signInSuccess, signInFailure } from "../../redux/user/userSlice";
+import { signInStart, signInSuccess, signInFailure, userClearError } from "../../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const SignIn = () => {
@@ -13,6 +13,10 @@ const SignIn = () => {
   const { loading, error } = useSelector((state) => state.user)
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(userClearError());
+  }, [dispatch]);
 
   useEffect(() => {
     if (currentUser) {
