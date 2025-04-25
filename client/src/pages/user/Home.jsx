@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 
 const Home = () => {
+  const { currentUser } = useSelector((state) => state.user);
 
   const navigate = useNavigate();
 
@@ -21,15 +23,16 @@ const Home = () => {
         A secure and modern authentication app built with MongoDB, Express, React, and Node.js.
       </p>
       <div className="flex gap-4">
+        {!currentUser && 
         <a
           onClick={handleGetStarted}
-          className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition"
+          className="px-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-800 transition cursor-pointer"
         >
           Get Started
-        </a>
+        </a> }
         <a
           onClick={handleLearnMore}
-          className="px-6 py-3 border border-slate-700 text-slate-700 rounded-lg hover:bg-slate-100 transition"
+          className="px-6 py-3 border border-slate-700 text-slate-700 rounded-lg hover:bg-slate-100 transition cursor-pointer"
         >
           Learn More
         </a>
