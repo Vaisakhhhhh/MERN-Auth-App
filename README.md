@@ -42,7 +42,6 @@ This is a full-stack web application built using the MERN stack (MongoDB, Expres
 - Express.js
 - JWT (jsonwebtoken)
 - Bcrypt.js
-- Multer (for file uploads)
 
 **Database:**
 - MongoDB
